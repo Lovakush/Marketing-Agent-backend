@@ -1,0 +1,38 @@
+# Security
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Virtual environments
+venv/
+env/
+.venv/
+ENV/
+
+# Database
+db.sqlite3
+*.db
+
+# Django
+*.log
+staticfiles/
+media/
+migrations/__pycache__/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
