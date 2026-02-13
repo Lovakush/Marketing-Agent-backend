@@ -13,4 +13,5 @@ urlpatterns = [
     # Session management
     path('session/<uuid:session_id>/', views.get_session_info, name='get_session_info'),
     path('session/reset/', views.reset_session, name='reset_session'),
+    path('session/close/', views.close_session, name='close_session'),  # NEW: Close and cleanup
 ]

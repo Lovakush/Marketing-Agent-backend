@@ -91,9 +91,12 @@ def chatbot(request):
                 message=user_message
             )
             
-            # Get conversation history (last 10 messages for context)
+            # FIXED: Get conversation history in CORRECT ORDER (oldest first, excluding current message)
+            # Get last 10 messages, ordered by timestamp ascending (oldest first)
             conversation_history = list(
-                session.messages.all().order_by('timestamp')[:10]
+                session.messages.all()
+                .exclude(id=user_msg_obj.id)  # Exclude the message we just created
+                .order_by('timestamp')[:10]  # Oldest first
             )
             
             # Generate AI response with full context
@@ -101,7 +104,7 @@ def chatbot(request):
                 user_message=user_message,
                 session=session,
                 context=context,
-                conversation_history=conversation_history[:-1]  # Exclude current message
+                conversation_history=conversation_history
             )
             
             # Save bot response
@@ -267,6 +270,56 @@ def reset_session(request):
             'success': True,
             'message': 'Session archived. Start a new conversation with a new session.'
         })
+        
+    except ChatSession.DoesNotExist:
+        return Response(
+            {
+                'success': False,
+                'error': 'Session not found'
+            },
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+
+@api_view(['POST'])
+def close_session(request):
+    """
+    NEW: Close a session and clean up messages.
+    This endpoint is called when user closes the chat widget.
+    """
+    session_id = request.data.get('session_id')
+    delete_messages = request.data.get('delete_messages', True)  # Default: delete messages
+    
+    if not session_id:
+        return Response(
+            {
+                'success': False,
+                'error': 'session_id is required'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    try:
+        session = ChatSession.objects.get(session_id=session_id)
+        
+        # Archive the session
+        session.status = 'closed'
+        session.save()
+        
+        # Delete messages if requested
+        if delete_messages:
+            messages_deleted = session.messages.all().delete()[0]
+            logger.info(f"Deleted {messages_deleted} messages for session {session_id}")
+            
+            return Response({
+                'success': True,
+                'message': f'Session closed and {messages_deleted} messages deleted.'
+            })
+        else:
+            return Response({
+                'success': True,
+                'message': 'Session closed.'
+            })
         
     except ChatSession.DoesNotExist:
         return Response(
