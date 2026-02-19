@@ -37,3 +37,13 @@ migrations/__pycache__/
 # OS
 .DS_Store
 Thumbs.db
+
+# Documentation (local only)
+AGENTS.md
+ARCHITECTURE.md
+DATABASE_*.md
+DEPLOYMENT_*.md
+IMPLEMENTATION_*.md
+SUPABASE_*.md
+SIA-Backend-API-*.json
+IMMEDIATE_SECURITY_FIX.sql

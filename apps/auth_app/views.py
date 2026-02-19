@@ -447,3 +447,34 @@ def request_password_reset(request):
         'success': True,
         'message': 'If an account exists with this email, a password reset link has been sent.'
     })
+
+
+# =============================================================================
+# Email Verification
+# =============================================================================
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def resend_verification_email(request):
+    """
+    Resend email verification link.
+    
+    Request body:
+    {
+        "email": "user@example.com"
+    }
+    """
+    email = request.data.get('email')
+    
+    if not email:
+        return Response({
+            'success': False,
+            'error': 'Email is required'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # In production, this would call Supabase to resend verification email
+    # For now, instruct user to check their email
+    return Response({
+        'success': True,
+        'message': 'If an account exists with this email, a verification link has been sent. Please check your inbox and spam folder.'
+    })

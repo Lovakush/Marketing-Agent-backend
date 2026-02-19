@@ -30,6 +30,9 @@ urlpatterns = [
     # Password Reset
     path('password/reset/', views.request_password_reset, name='auth-password-reset'),
     
+    # Email Verification
+    path('verification/resend/', views.resend_verification_email, name='auth-resend-verification'),
+    
     # Debug endpoints (remove in production)
     path('debug/', views_debug.debug_auth, name='auth-debug'),
     path('verify-token/', views_debug.verify_token_direct, name='auth-verify-token'),

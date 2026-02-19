@@ -147,9 +147,25 @@ class AuthService:
         
         user = result.get('user', {})
         
+        # Check if email is verified
+        # Supabase returns email_confirmed_at if email is verified
+        email_confirmed_at = user.get('email_confirmed_at')
+        if not email_confirmed_at:
+            logger.warning(f"Login attempt with unverified email: {email}")
+            return False, {
+                'error': 'Email not verified. Please check your email and verify your account before logging in.',
+                'code': 'email_not_verified'
+            }
+        
         # Update or create SupabaseUser
         try:
             supabase_user = SupabaseUser.objects.get(supabase_uid=user.get('id'))
+            
+            # Update email_confirmed status
+            if email_confirmed_at and not supabase_user.email_confirmed:
+                supabase_user.email_confirmed = True
+                supabase_user.save(update_fields=['email_confirmed'])
+            
             supabase_user.record_login()
             
             return True, {
