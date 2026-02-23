@@ -79,7 +79,7 @@ class SupabaseAuth:
     # Auth operations                                                        #
     # ------------------------------------------------------------------ #
 
-    def sign_up(self, email: str, password: str, user_metadata: Dict = None) -> Tuple[bool, Dict]:
+    def sign_up(self, email: str, password: str, user_metadata: Dict = None, email_redirect_to: str = None) -> Tuple[bool, Dict]:
         """
         Register a new user. Supabase sends a confirmation email.
         Returns (True, user_data) or (False, error_dict).
@@ -87,6 +87,8 @@ class SupabaseAuth:
         body = {"email": email, "password": password}
         if user_metadata:
             body["data"] = user_metadata  # Supabase v2 uses 'data' for user_metadata on sign-up
+        redirect = email_redirect_to or os.environ.get("FRONTEND_URL", "https://siasolutions.com")
+        body["email_redirect_to"] = redirect
 
         try:
             response = requests.post(
