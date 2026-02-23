@@ -37,20 +37,3 @@ migrations/__pycache__/
 # OS
 .DS_Store
 Thumbs.db
-
-# Documentation (local only)
-AGENTS.md
-ARCHITECTURE.md
-DATABASE_*.md
-DEPLOYMENT_*.md
-IMPLEMENTATION_*.md
-SUPABASE_*.md
-SIA-Backend-API-*.json
-IMMEDIATE_SECURITY_FIX.sql
-
-# Local-only / sensitive files — do not push
-CLAUDE.md
-.claude/
-SIA_API.postman_collection.json
-email_templates/
-apps/auth_app/management/commands/make_super_admin.py
