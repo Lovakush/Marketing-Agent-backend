@@ -91,17 +91,20 @@ class SupabaseAuth:
         body["email_redirect_to"] = redirect
 
         try:
+            # Increased timeout to 30s for SMTP email sending (new email providers may be slow)
             response = requests.post(
                 f"{self.auth_url}/signup",
                 headers={"apikey": self.anon_key, "Content-Type": "application/json"},
                 json=body,
-                timeout=10,
+                timeout=30,
             )
             data = response.json() if response.text else {}
             if response.status_code in (200, 201):
                 return True, data
             error_msg = data.get("msg") or data.get("message") or data.get("error_description") or "Registration failed"
             return False, {"error": error_msg}
+        except requests.exceptions.Timeout:
+            return False, {"error": "Registration is taking longer than expected. Please try again in a moment."}
         except requests.exceptions.RequestException as exc:
             return False, {"error": str(exc)}
 

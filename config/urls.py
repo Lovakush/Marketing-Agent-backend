@@ -13,5 +13,6 @@ urlpatterns = [
     path("api/agents/", include("apps.tenants.urls")),
     path("api/waitlist/", include("apps.waitlist.urls")),
     path("api/chat/", include("apps.chatbot.urls")),
+    path("oauth/", include("apps.oauth.urls")),
     path("", home_view),
 ]

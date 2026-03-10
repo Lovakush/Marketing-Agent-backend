@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'apps.chatbot',
     'apps.tenants',
     'apps.auth_app',
+    'apps.oauth',
 ]
 
 MIDDLEWARE = [
@@ -127,3 +128,13 @@ AGENT_CONFIG = {
 }
 
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+
+# OIDC / OAuth 2.0 Configuration
+# OIDC_SIGNING_KEY: HS256 secret used to sign id_tokens.
+# Must be the same value configured in each agent backend for local verification.
+# Generate with: python -c "import secrets; print(secrets.token_hex(32))"
+OIDC_SIGNING_KEY = os.getenv('OIDC_SIGNING_KEY', '')
+# OIDC_ISSUER: the public URL of THIS backend (not the frontend).
+# Used as the `iss` claim in issued id_tokens.
+OIDC_ISSUER = os.getenv('OIDC_ISSUER', 'http://localhost:8000')
+OIDC_TOKEN_EXPIRY = 3600  # seconds (access_token and id_token lifetime)
